@@ -2,17 +2,19 @@
 
 The "wrapped AERGO" token is the ARC1 version of the native AERGO token
 
-Name: wrapped AERGO
-Symbol: WAERGO
-Decimals: 18
-Address (testnet): 
-Address (alphanet): 
+<table>
+  <tr><td>Name:</td><td>wrapped AERGO</td></tr>
+  <tr><td>Symbol:</td><td>WAERGO</td></tr>
+  <tr><td>Decimals:</td><td>18</td></tr>
+  <tr><td>Address (testnet):</td><td></td></tr>
+  <tr><td>Address (alphanet):</td><td></td></tr>
+</table>
 
 With this contract we can "convert" native AERGO tokens to its "wrapped"
 version (WAERGO) in ARC1 format, as well as to convert back the 
 wrapped tokens to the native ones (unwrap)
 
-It makes it easier to develop DeFi contracts, as we only need to support
+It makes it easier to develop DeFi contracts, as they only need to support
 ARC1 tokens
 
 
@@ -43,8 +45,7 @@ The address depends on the network being used.
 
 ### Wrap
 
-Call the function `wrap` on the contract, sending the aergo tokens
-that should be wrapped.
+Call the `wrap` function, sending the aergo tokens that should be wrapped.
 
 On a contract:
 
@@ -67,8 +68,7 @@ end
 
 Wrap the native tokens and send the WAERGO to a destination address.
 
-Call the function `wrap_to` on the contract, sending the aergo tokens
-that should be wrapped.
+Call the `wrap_to` function, sending the aergo tokens that should be wrapped.
 
 ```lua
 contract.call.value(amount)(waergo, "wrap_to", address)
@@ -80,7 +80,7 @@ If the destination is a contract, it must implement the
 
 ### Unwrap
 
-Call the function `unwrap` informing the amount of tokens
+Call the `unwrap` function, informing the amount of tokens
 that should be unwrapped.
 
 On a contract, you can inform the payable function that will
