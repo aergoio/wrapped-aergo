@@ -128,6 +128,7 @@ function constructor()
   _name:set("wrapped AERGO")
   _symbol:set("WAERGO")
   _decimals:set(18)
+  _totalSupply:set(bignum.number(0))
 end
 
 ------------  Main Functions ------------
