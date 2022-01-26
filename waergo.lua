@@ -95,13 +95,7 @@ local function _wrap(value, from, to, ...)
 
   _callTokensReceived(from, to, value, ...)
 
-  --[[
-  contract.event("wrap", from, value)
-  if to ~= from then
-    contract.event("transfer", from, to, value)
-  end
-  ]]
-  contract.event("transfer", address0, to, value)
+  contract.event("wrap", to, value)
 end
 
 local function _unwrap(value, from, to, recvFunc)
@@ -122,8 +116,7 @@ local function _unwrap(value, from, to, recvFunc)
     contract.send(to, value)
   end
 
-  --contract.event("unwrap", from, value)
-  contract.event("transfer", from, address0, value)
+  contract.event("unwrap", from, value)
 end
 
 function constructor()
