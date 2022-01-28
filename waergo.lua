@@ -161,6 +161,9 @@ end
 -- @param   owner  (address) a target address
 -- @return  (ubig) balance of owner
 function balanceOf(owner)
+  if owner == nil or owner == '' then
+    owner = system.getSender()
+  end
   return _balances[owner] or bignum.number(0)
 end
 
