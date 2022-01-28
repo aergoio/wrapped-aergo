@@ -54,7 +54,7 @@ local function _transfer(from, to, value, ...)
 
   _callTokensReceived(from, to, value, ...)
 
-  contract.event("transfer", from, to, value)
+  contract.event("transfer", from, to, bignum.tostring(value))
 end
 
 --[[
@@ -95,7 +95,7 @@ local function _wrap(value, from, to, ...)
 
   _callTokensReceived(from, to, value, ...)
 
-  contract.event("wrap", to, value)
+  contract.event("wrap", to, bignum.tostring(value))
 end
 
 local function _unwrap(value, from, to, recvFunc)
@@ -116,7 +116,7 @@ local function _unwrap(value, from, to, recvFunc)
     contract.send(to, value)
   end
 
-  contract.event("unwrap", from, value)
+  contract.event("unwrap", from, bignum.tostring(value))
 end
 
 function constructor()
