@@ -24,6 +24,15 @@ local function _typecheck(x, t)
   end
 end
 
+function _check_bignum(x)
+  if type(x) == 'string' then
+    assert(string.match(x, '[^0-9]') == nil, "amount contains invalid character")
+    x = bignum.number(x)
+  end
+  _typecheck(x, 'ubig')
+  return x
+end
+
 address0 = '1111111111111111111111111111111111111111111111111111'
 
 state.var {
@@ -45,7 +54,7 @@ end
 local function _transfer(from, to, amount, ...)
   _typecheck(from, 'address')
   _typecheck(to, 'address')
-  _typecheck(amount, 'ubig')
+  amount = _check_bignum(amount)
 
   assert(_balances[from] and _balances[from] >= amount, "not enough balance")
 
@@ -60,7 +69,7 @@ end
 --[[
 local function _mint(to, amount, ...)
   _typecheck(to, 'address')
-  _typecheck(amount, 'ubig')
+  amount = _check_bignum(amount)
 
   _totalSupply:set((_totalSupply:get() or bignum.number(0)) + amount)
   _balances[to] = (_balances[to] or bignum.number(0)) + amount
@@ -72,7 +81,7 @@ end
 
 local function _burn(from, amount)
   _typecheck(from, 'address')
-  _typecheck(amount, 'ubig')
+  amount = _check_bignum(amount)
 
   assert(_balances[from] and _balances[from] >= amount, "not enough balance")
 
@@ -84,7 +93,7 @@ end
 ]]
 
 local function _wrap(amount, from, to, ...)
-  _typecheck(amount, 'ubig')
+  amount = _check_bignum(amount)
   _typecheck(from, 'address')
   if to ~= from then
     _typecheck(to, 'address')
@@ -99,7 +108,7 @@ local function _wrap(amount, from, to, ...)
 end
 
 local function _unwrap(amount, from, to, recvFunc)
-  _typecheck(amount, 'ubig')
+  amount = _check_bignum(amount)
   _typecheck(from, 'address')
   if to ~= from then
     _typecheck(to, 'address')
