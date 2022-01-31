@@ -36,87 +36,87 @@ state.var {
   _decimals = state.value(),
 }
 
-local function _callTokensReceived(from, to, value, ...)
+local function _callTokensReceived(from, to, amount, ...)
   if to ~= address0 and system.isContract(to) then
-    contract.call(to, "tokensReceived", system.getSender(), from, value, ...)
+    contract.call(to, "tokensReceived", system.getSender(), from, amount, ...)
   end
 end
 
-local function _transfer(from, to, value, ...)
+local function _transfer(from, to, amount, ...)
   _typecheck(from, 'address')
   _typecheck(to, 'address')
-  _typecheck(value, 'ubig')
+  _typecheck(amount, 'ubig')
 
-  assert(_balances[from] and _balances[from] >= value, "not enough balance")
+  assert(_balances[from] and _balances[from] >= amount, "not enough balance")
 
-  _balances[from] = _balances[from] - value
-  _balances[to] = (_balances[to] or bignum.number(0)) + value
+  _balances[from] = _balances[from] - amount
+  _balances[to] = (_balances[to] or bignum.number(0)) + amount
 
-  _callTokensReceived(from, to, value, ...)
+  _callTokensReceived(from, to, amount, ...)
 
-  contract.event("transfer", from, to, bignum.tostring(value))
+  contract.event("transfer", from, to, bignum.tostring(amount))
 end
 
 --[[
-local function _mint(to, value, ...)
+local function _mint(to, amount, ...)
   _typecheck(to, 'address')
-  _typecheck(value, 'ubig')
+  _typecheck(amount, 'ubig')
 
-  _totalSupply:set((_totalSupply:get() or bignum.number(0)) + value)
-  _balances[to] = (_balances[to] or bignum.number(0)) + value
+  _totalSupply:set((_totalSupply:get() or bignum.number(0)) + amount)
+  _balances[to] = (_balances[to] or bignum.number(0)) + amount
 
-  _callTokensReceived(address0, to, value, ...)
+  _callTokensReceived(address0, to, amount, ...)
 
-  contract.event("transfer", address0, to, value)
+  contract.event("transfer", address0, to, amount)
 end
 
-local function _burn(from, value)
+local function _burn(from, amount)
   _typecheck(from, 'address')
-  _typecheck(value, 'ubig')
+  _typecheck(amount, 'ubig')
 
-  assert(_balances[from] and _balances[from] >= value, "not enough balance")
+  assert(_balances[from] and _balances[from] >= amount, "not enough balance")
 
-  _totalSupply:set(_totalSupply:get() - value)
-  _balances[from] = _balances[from] - value
+  _totalSupply:set(_totalSupply:get() - amount)
+  _balances[from] = _balances[from] - amount
 
-  contract.event("transfer", from, address0, value)
+  contract.event("transfer", from, address0, amount)
 end
 ]]
 
-local function _wrap(value, from, to, ...)
-  _typecheck(value, 'ubig')
+local function _wrap(amount, from, to, ...)
+  _typecheck(amount, 'ubig')
   _typecheck(from, 'address')
   if to ~= from then
     _typecheck(to, 'address')
   end
 
-  _totalSupply:set((_totalSupply:get() or bignum.number(0)) + value)
-  _balances[to] = (_balances[to] or bignum.number(0)) + value
+  _totalSupply:set((_totalSupply:get() or bignum.number(0)) + amount)
+  _balances[to] = (_balances[to] or bignum.number(0)) + amount
 
-  _callTokensReceived(from, to, value, ...)
+  _callTokensReceived(from, to, amount, ...)
 
-  contract.event("wrap", to, bignum.tostring(value))
+  contract.event("wrap", to, bignum.tostring(amount))
 end
 
-local function _unwrap(value, from, to, recvFunc)
-  _typecheck(value, 'ubig')
+local function _unwrap(amount, from, to, recvFunc)
+  _typecheck(amount, 'ubig')
   _typecheck(from, 'address')
   if to ~= from then
     _typecheck(to, 'address')
   end
 
-  assert(_balances[from] and _balances[from] >= value, "not enough balance")
+  assert(_balances[from] and _balances[from] >= amount, "not enough balance")
 
-  _totalSupply:set(_totalSupply:get() - value)
-  _balances[from] = _balances[from] - value
+  _totalSupply:set(_totalSupply:get() - amount)
+  _balances[from] = _balances[from] - amount
 
   if system.isContract(to) then
-    contract.call.value(value)(to, recvFunc, from)
+    contract.call.value(amount)(to, recvFunc, from)
   else
-    contract.send(to, value)
+    contract.send(to, amount)
   end
 
-  contract.event("unwrap", from, bignum.tostring(value))
+  contract.event("unwrap", from, bignum.tostring(amount))
 end
 
 function constructor()
@@ -170,11 +170,11 @@ end
 -- Transfer sender's token to target 'to'
 -- @type    call
 -- @param   to      (address) a target address
--- @param   value   (ubig) an amount of token to send
+-- @param   amount  (ubig) an amount of token to send
 -- @param   ...     addtional data, MUST be sent unaltered in call to 'tokensReceived' on 'to'
--- @event   transfer(from, to, value)
-function transfer(to, value, ...)
-  _transfer(system.getSender(), to, value, ...)
+-- @event   transfer(from, to, amount)
+function transfer(to, amount, ...)
+  _transfer(system.getSender(), to, amount, ...)
 end
 
 -- Get allowance from owner to spender
@@ -206,19 +206,19 @@ end
 -- @type    call
 -- @param   from    (address) a sender's address
 -- @param   to      (address) a receiver's address
--- @param   value   (ubig) an amount of token to send
+-- @param   amount  (ubig) an amount of token to send
 -- @param   ...     addtional data, MUST be sent unaltered in call to 'tokensReceived' on 'to'
--- @event   transfer(from, to, value)
-function transferFrom(from, to, value, ...)
+-- @event   transfer(from, to, amount)
+function transferFrom(from, to, amount, ...)
   assert(isApprovedForAll(from, system.getSender()), "caller is not approved for holder")
 
-  _transfer(from, to, value, ...)
+  _transfer(from, to, amount, ...)
 end
 
 -- Wrap sender's AERGO tokens into WAERGO
 -- @type    call
 -- @param   ...     addtional data, MUST be sent unaltered in call to 'tokensReceived' on 'to'
--- @event   wrap(from, value)
+-- @event   wrap(from, amount)
 function wrap(...)
   local from = system.getSender()
   local amount = bignum.number(system.getAmount())
@@ -230,8 +230,8 @@ end
 -- @type    call
 -- @param   to      (address) a target address
 -- @param   ...     addtional data, MUST be sent unaltered in call to 'tokensReceived' on 'to'
--- @event   wrap(from, value)
--- @event   transfer(from, to, value)
+-- @event   wrap(from, amount)
+-- @event   transfer(from, to, amount)
 function wrap_to(to, ...)
   local from = system.getSender()
   local amount = bignum.number(system.getAmount())
@@ -243,7 +243,7 @@ end
 -- @type    call
 -- @param   amount   (ubig) the amount of tokens to unwrap
 -- @param   recvFunc (string) if a contract, the name of the payable function to receive the AERGO
--- @event   unwrap(from, value)
+-- @event   unwrap(from, amount)
 function unwrap(amount, recvFunc)
   local from = system.getSender()
   _unwrap(amount, from, from, recvFunc)
@@ -254,7 +254,7 @@ end
 -- @param   amount   (ubig) the amount of tokens to unwrap
 -- @param   to       (address) a target address
 -- @param   recvFunc (string) if a contract, the name of the payable function to receive the AERGO
--- @event   unwrap(from, value)
+-- @event   unwrap(from, amount)
 function unwrap_to(amount, to, recvFunc)
   local from = system.getSender()
   _unwrap(amount, from, to, recvFunc)
