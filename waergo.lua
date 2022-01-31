@@ -46,7 +46,7 @@ state.var {
 }
 
 local function _callTokensReceived(from, to, amount, ...)
-  if to ~= address0 and system.isContract(to) then
+  if system.isContract(to) then
     contract.call(to, "tokensReceived", system.getSender(), from, amount, ...)
   end
 end
