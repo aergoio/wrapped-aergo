@@ -47,7 +47,9 @@ state.var {
 
 local function _callTokensReceived(from, to, amount, ...)
   if system.isContract(to) then
-    contract.call(to, "tokensReceived", system.getSender(), from, amount, ...)
+    return contract.call(to, "tokensReceived", system.getSender(), from, amount, ...)
+  else
+    return nil
   end
 end
 
@@ -61,9 +63,9 @@ local function _transfer(from, to, amount, ...)
   _balances[from] = _balances[from] - amount
   _balances[to] = (_balances[to] or bignum.number(0)) + amount
 
-  _callTokensReceived(from, to, amount, ...)
-
   contract.event("transfer", from, to, bignum.tostring(amount))
+
+  return _callTokensReceived(from, to, amount, ...)
 end
 
 --[[
@@ -74,9 +76,9 @@ local function _mint(to, amount, ...)
   _totalSupply:set((_totalSupply:get() or bignum.number(0)) + amount)
   _balances[to] = (_balances[to] or bignum.number(0)) + amount
 
-  _callTokensReceived(address0, to, amount, ...)
-
   contract.event("transfer", address0, to, amount)
+
+  return _callTokensReceived(address0, to, amount, ...)
 end
 
 local function _burn(from, amount)
@@ -102,9 +104,9 @@ local function _wrap(amount, from, to, ...)
   _totalSupply:set((_totalSupply:get() or bignum.number(0)) + amount)
   _balances[to] = (_balances[to] or bignum.number(0)) + amount
 
-  _callTokensReceived(from, to, amount, ...)
-
   contract.event("wrap", to, bignum.tostring(amount))
+
+  return _callTokensReceived(from, to, amount, ...)
 end
 
 local function _unwrap(amount, from, to, recvFunc)
@@ -119,13 +121,13 @@ local function _unwrap(amount, from, to, recvFunc)
   _totalSupply:set(_totalSupply:get() - amount)
   _balances[from] = _balances[from] - amount
 
+  contract.event("unwrap", from, bignum.tostring(amount))
+
   if system.isContract(to) then
     contract.call.value(amount)(to, recvFunc, from)
   else
     contract.send(to, amount)
   end
-
-  contract.event("unwrap", from, bignum.tostring(amount))
 end
 
 function constructor()
