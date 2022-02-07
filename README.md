@@ -6,8 +6,8 @@ The "wrapped AERGO" token is the ARC1 version of the native AERGO token
   <tr><td>Name:</td><td>wrapped AERGO</td></tr>
   <tr><td>Symbol:</td><td>WAERGO</td></tr>
   <tr><td>Decimals:</td><td>18</td></tr>
-  <tr><td>Address (testnet):</td><td>AmgDDrLPYdRw2hutmwNqr3V46ojuGqT4VwJxarz153cQraAyNUNY</td></tr>
-  <tr><td>Address (alphanet):</td><td>AmgRhgZPeBd2mvRhrCAVYtTHhYEzFnVMywKBDWBNa9mXyNn4jNqB</td></tr>
+  <tr><td>Address (testnet):</td><td>AmhEHnMcHvNXtW4nszzCvh4iLbV7BMgBkd4F1kn1jgzoAGW6oNqq</td></tr>
+  <tr><td>Address (alphanet):</td><td>Amg7eGH6SJ3QBhM297sDfPPiAbgj6gFAeUmYHCtPRYvjmdvF5iXY</td></tr>
 </table>
 
 With this contract we can "convert" native AERGO tokens to its "wrapped"
@@ -43,7 +43,7 @@ export waergo=Am...
 The address depends on the network being used.
 
 
-### Wrap
+## Wrap
 
 Call the `wrap` function, sending the aergo tokens that should be wrapped.
 
@@ -64,7 +64,7 @@ function tokensReceived(operator, from, amount)
 end
 ```
 
-### Wrap To
+## Wrap To
 
 Wrap the native tokens and send the WAERGO to a destination address.
 
@@ -78,7 +78,7 @@ If the destination is a contract, it must implement the
 `tokensReceived()` interface.
 
 
-### Unwrap
+## Unwrap
 
 Call the `unwrap` function, informing the amount of tokens
 that should be unwrapped.
@@ -94,7 +94,7 @@ If the contract has a default function marked as payable, then
 there is no need to inform the function name.
 
 
-### Unwrap To
+## Unwrap To
 
 Unwrap the WAERGO to native AERGO and send them to a destination
 account.
@@ -118,7 +118,7 @@ If the destination contract has a default function marked as
 payable, then there is no need to inform the function name.
 
 
-### Transfer
+## Transfer
 
 As it follows the ARC1 standard, we can make transfers in the
 same way as for any ARC1 token.
