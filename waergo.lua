@@ -53,7 +53,7 @@ local function _callTokensReceived(from, to, amount, ...)
   end
 end
 
-local function _transfer(from, to, amount, ...)
+local function _transfer(operator, from, to, amount, ...)
   _typecheck(from, 'address')
   _typecheck(to, 'address')
   amount = _check_bignum(amount)
@@ -63,7 +63,7 @@ local function _transfer(from, to, amount, ...)
   _balances[from] = _balances[from] - amount
   _balances[to] = (_balances[to] or bignum.number(0)) + amount
 
-  contract.event("transfer", from, to, bignum.tostring(amount))
+  contract.event("transfer", operator, from, to, bignum.tostring(amount))
 
   return _callTokensReceived(from, to, amount, ...)
 end
@@ -95,11 +95,11 @@ end
 ]]
 
 local function _wrap(amount, from, to, ...)
-  amount = _check_bignum(amount)
   _typecheck(from, 'address')
   if to ~= from then
     _typecheck(to, 'address')
   end
+  amount = _check_bignum(amount)
 
   _totalSupply:set((_totalSupply:get() or bignum.number(0)) + amount)
   _balances[to] = (_balances[to] or bignum.number(0)) + amount
@@ -110,11 +110,11 @@ local function _wrap(amount, from, to, ...)
 end
 
 local function _unwrap(amount, from, to, recvFunc)
-  amount = _check_bignum(amount)
   _typecheck(from, 'address')
   if to ~= from then
     _typecheck(to, 'address')
   end
+  amount = _check_bignum(amount)
 
   assert(_balances[from] and _balances[from] >= amount, "not enough balance")
 
@@ -185,7 +185,7 @@ end
 -- @param   ...     addtional data, MUST be sent unaltered in call to 'tokensReceived' on 'to'
 -- @event   transfer(from, to, amount)
 function transfer(to, amount, ...)
-  _transfer(system.getSender(), to, amount, ...)
+  _transfer(nil, system.getSender(), to, amount, ...)
 end
 
 -- Get allowance from owner to spender
@@ -221,9 +221,10 @@ end
 -- @param   ...     addtional data, MUST be sent unaltered in call to 'tokensReceived' on 'to'
 -- @event   transfer(from, to, amount)
 function transferFrom(from, to, amount, ...)
-  assert(isApprovedForAll(from, system.getSender()), "caller is not approved for holder")
+  local operator = system.getSender()
+  assert(isApprovedForAll(from, operator), "caller is not approved for holder")
 
-  _transfer(from, to, amount, ...)
+  _transfer(operator, from, to, amount, ...)
 end
 
 -- Wrap sender's AERGO tokens into WAERGO
