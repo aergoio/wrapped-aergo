@@ -63,7 +63,7 @@ local function _transfer(operator, from, to, amount, ...)
   _balances[from] = _balances[from] - amount
   _balances[to] = (_balances[to] or bignum.number(0)) + amount
 
-  contract.event("transfer", operator, from, to, bignum.tostring(amount))
+  contract.event("transfer", from, to, bignum.tostring(amount), operator)
 
   return _callTokensReceived(from, to, amount, ...)
 end
