@@ -104,7 +104,7 @@ local function _wrap(amount, from, to, ...)
   _totalSupply:set((_totalSupply:get() or bignum.number(0)) + amount)
   _balances[to] = (_balances[to] or bignum.number(0)) + amount
 
-  contract.event("wrap", to, bignum.tostring(amount))
+  contract.event("mint", to, bignum.tostring(amount))
 
   return _callTokensReceived(from, to, amount, ...)
 end
@@ -121,7 +121,7 @@ local function _unwrap(amount, from, to, recvFunc)
   _totalSupply:set(_totalSupply:get() - amount)
   _balances[from] = _balances[from] - amount
 
-  contract.event("unwrap", from, bignum.tostring(amount))
+  contract.event("burn", from, bignum.tostring(amount), nil)
 
   if system.isContract(to) then
     contract.call.value(amount)(to, recvFunc, from)
