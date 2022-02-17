@@ -123,3 +123,13 @@ payable, then there is no need to inform the function name.
 As it follows the ARC1 standard, we can make transfers in the
 same way as for any ARC1 token.
 
+
+## Publishing the token contract
+
+Run:
+
+```
+./build.sh
+```
+
+Then deploy the generated `output.lua` to the network.
