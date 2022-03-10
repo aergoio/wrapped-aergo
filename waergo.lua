@@ -32,7 +32,7 @@ local function _unwrap(amount, from, to, recvFunc)
 
   -- send AERGO tokens (to)
 
-  if system.isContract(to) then
+  if system.isContract(to) and recvFunc ~= nil then
     contract.call.value(amount)(to, recvFunc, from)
   else
     contract.send(to, amount)
