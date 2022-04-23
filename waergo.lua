@@ -44,23 +44,25 @@ end
 -- Wrap sender's AERGO tokens into WAERGO
 -- @type    call
 -- @param   ...     addtional data, is sent unaltered in call to 'tokensReceived' on 'to'
+-- @return  value returned from 'tokensReceived' callback, or nil
 -- @event   mint(from, amount)
 function wrap(...)
   local to = system.getSender()
   local amount = bignum.number(system.getAmount())
 
-  _wrap(amount, to, ...)
+  return _wrap(amount, to, ...)
 end
 
 -- Wrap sender's AERGO tokens into WAERGO and transfer them to target 'to'
 -- @type    call
 -- @param   to      (address) a target address
 -- @param   ...     addtional data, is sent unaltered in call to 'tokensReceived' on 'to'
+-- @return  value returned from 'tokensReceived' callback, or nil
 -- @event   mint(to, amount)
 function wrap_to(to, ...)
   local amount = bignum.number(system.getAmount())
 
-  _wrap(amount, to, ...)
+  return _wrap(amount, to, ...)
 end
 
 -- Unwrap sender's WAERGO tokens to native AERGO
