@@ -6,8 +6,8 @@ The "wrapped AERGO" token is the ARC1 version of the native AERGO token
   <tr><td>Name:</td><td>wrapped AERGO</td></tr>
   <tr><td>Symbol:</td><td>WAERGO</td></tr>
   <tr><td>Decimals:</td><td>18</td></tr>
-  <tr><td>Address (testnet):</td><td>AmhPfdXVrf1PzV8UtzKhgCPAiSa51iPaDmBMofoCX5XL7tL7xSJX</td></tr>
-  <tr><td>Address (alphanet):</td><td>AmgBnxoUfsrZEca8wNfoDXxm2WSY3zgUCW9vou7KwLt9K5dGyrFW</td></tr>
+  <tr><td>Address (testnet):</td><td>Amhop8LbAPynYpbcMUacSVPcCsxXPHaauRhGfaCP2eV8LoBLWcyz</td></tr>
+  <tr><td>Address (alphanet):</td><td>AmgoCLoNWuexD7qARcSLThZekL48cH2xXrzAFKcMgeDjn7FfpeQb</td></tr>
 </table>
 
 With this contract we can "convert" native AERGO tokens to its "wrapped"
